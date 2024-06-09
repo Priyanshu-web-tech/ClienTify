@@ -98,7 +98,7 @@ Start the server
 
 
 
-## Screenshots
+<!-- ## Screenshots
 
-![App Screenshot](URL)
+![App Screenshot](URL) -->
 
