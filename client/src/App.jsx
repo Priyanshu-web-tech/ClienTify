@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
-import { Outlet,useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { signOutUserSuccess, updateUserSuccess } from "./redux/user/userSlice";
 import axios from "axios";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
 import { Toaster } from "react-hot-toast";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const checkTokenValidity = async () => {
@@ -18,6 +18,7 @@ const App = () => {
           withCredentials: true, // This ensures cookies are sent
         });
         const data = res.data;
+        console.log(data)
         if (data.success === false) {
           // Token is expired, dispatch sign out actions
           dispatch(signOutUserSuccess({}));
@@ -36,10 +37,11 @@ const App = () => {
 
   return (
     <>
+      <Navbar />
       <Toaster
         position="top-right"
         toastOptions={{
-          duration: 2000,
+          duration: 3000,
         }}
       />
       <Outlet />

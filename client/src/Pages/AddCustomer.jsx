@@ -1,32 +1,113 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const AddCustomer = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [totalSpends, setTotalSpends] = useState('');
-  const [visits, setVisits] = useState('');
-  const [lastVisit, setLastVisit] = useState('');
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    totalSpends: "",
+    visits: "",
+    lastVisit: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const customer = { name, email, totalSpends, visits, lastVisit };
-    await axios.post('api/customers/add', customer);
-    toast.success('Customer added successfully')
+    await axios.post("api/customers/add", formData);
+    toast.success("Customer added successfully");
+    setFormData({
+      name: "",
+      email: "",
+      totalSpends: "",
+      visits: "",
+      lastVisit: "",
+    });
   };
 
   return (
     <div>
-      <h2>Add Customer</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="number" placeholder="Total Spends" value={totalSpends} onChange={(e) => setTotalSpends(e.target.value)} required />
-        <input type="number" placeholder="Visits" value={visits} onChange={(e) => setVisits(e.target.value)} required />
-        <input type="date" placeholder="Last Visit" value={lastVisit} onChange={(e) => setLastVisit(e.target.value)} required />
-        <button type="submit">Add Customer</button>
-      </form>
+      <div className="p-4 bg-pale-white rounded-lg">
+        <h1 className="text-3xl font-bold mb-4">Add Customer</h1>
+        <hr />
+      </div>
+      <div className="bg-white shadow-md rounded-lg p-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <label>
+            Name:
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            />
+          </label>
+          <label>
+            Email:
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            />
+          </label>
+          <label>
+            Total Spends:
+            <input
+              type="number"
+              name="totalSpends"
+              placeholder="Total Spends"
+              value={formData.totalSpends}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            />
+          </label>
+          <label>
+            Visits:
+            <input
+              type="number"
+              name="visits"
+              placeholder="Visits"
+              value={formData.visits}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            />
+          </label>
+          <label>
+            Last Visit:
+            <input
+              type="date"
+              name="lastVisit"
+              placeholder="Last Visit"
+              value={formData.lastVisit}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            />
+          </label>
+          <button
+            type="submit"
+            className="w-full bg-dark text-white py-2 rounded-lg hover:opacity-50 transition duration-300"
+          >
+            Add Customer
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

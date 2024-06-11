@@ -48,7 +48,7 @@ const OAuth = () => {
       <button
         type="button"
         onClick={handleGoogleClick}
-        className={`bg-gray-200 hover:bg-gray-300 text-gray-700 p-3 rounded-lg uppercase w-full flex items-center justify-center space-x-2 `}
+        className={`bg-gray  text-white p-3 rounded-lg uppercase w-full flex items-center justify-center space-x-2 `}
       >
         <span>
           <FaGoogle size={20} />

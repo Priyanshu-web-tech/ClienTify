@@ -4,7 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import axios from "axios";
 import toast from 'react-hot-toast';
-import Navbar from "../components/Navbar";
 
 
 function ResetPassword() {
@@ -83,7 +82,6 @@ function ResetPassword() {
 
   return (
     <>
-    <Navbar/>
     <div className={`flex items-center justify-center min-h-screen $`}>
       <div className={`shadow-lg rounded p-8 max-w-md w-full `}>
         <h1 className="text-3xl font-semibold text-center mb-6 text-teal-800">
@@ -157,7 +155,7 @@ function ResetPassword() {
           </div>
           <button
             type="submit"
-            className="w-full bg-teal-800 text-white py-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+            className="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium bg-dark text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2"
           >
             Reset
           </button>

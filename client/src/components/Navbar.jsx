@@ -22,9 +22,7 @@ const Navbar = () => {
   const handleSignOut = async () => {
     try {
       dispatch(signOutUserStart());
-      const res = await axios.get(
-        `api/user/signout`
-      );
+      const res = await axios.get(`api/user/signout`);
       const data = res.data;
       if (data.success === false) {
         dispatch(signOutUserFailure(data.message));
@@ -39,26 +37,30 @@ const Navbar = () => {
 
   return (
     <div className="relative w-full p-2 bg-pale-white text-dark">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
+      <div className="flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         <div className="inline-flex items-center space-x-2">
           <Link to="/">
-            <span className="font-bold text-2xl">CRM</span>
+            <span className="font-bold text-3xl ">ClienTify.</span>
           </Link>
         </div>
         <div className="hidden lg:block">
-          <ul className="inline-flex space-x-8">
+          <ul className="inline-flex space-x-8 ">
+            <Link to={"/"} className="hover:text-red transition duration-300">
+              Home
+            </Link>
+
             {currentUser ? (
               <div className="space-x-4">
                 <Link
                   to={"/home"}
-                  className="text-slate-400 hover:text-blue-400"
+                  className="hover:text-red transition duration-300"
                 >
                   Dashboard
                 </Link>
 
                 <button
                   onClick={handleSignOut}
-                  className="text-slate-400 hover:text-blue-400"
+                  className="hover:text-red transition duration-300"
                 >
                   Sign Out
                 </button>
@@ -66,7 +68,7 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/sign-in"
-                className="text-slate-400 hover:text-blue-400"
+                className="hover:text-red transition duration-300"
               >
                 Sign in
               </Link>
@@ -89,7 +91,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-between">
                   <div className="inline-flex  items-center space-x-2">
                     <Link to="/">
-                      <span className="font-bold text-2xl">CRM</span>
+                      <span className="font-bold text-2xl ">Clientify</span>
                     </Link>{" "}
                   </div>
                   <div className="-mr-2">
@@ -103,25 +105,34 @@ const Navbar = () => {
                     </button>
                   </div>
                 </div>
-                <div className="mt-6 flex">
-                  <nav className="grid gap-y-4">
+                <div className="mt-2 flex">
+                  <nav>
+                    <Link
+                      to={"/"}
+                      className="hover:text-red transition duration-300 ml-5"
+                    >
+                      Home
+                    </Link>
+
                     {currentUser ? (
                       <div className="flex flex-col">
-                        <Link to={"/home"}>
-                          <button className="text-slate-400 hover:text-blue-400">
-                            Dashboard
-                          </button>
+                        <Link
+                          to={"/home"}
+                          className="hover:text-red transition duration-300 ml-5"
+                        >
+                          Dashboard
                         </Link>
+
                         <button
                           onClick={handleSignOut}
-                          className="text-slate-400 hover:text-blue-400"
+                          className="hover:text-red transition duration-300"
                         >
                           Sign Out
                         </button>
                       </div>
                     ) : (
                       <Link to="/sign-in">
-                        <button className="text-slate-400 hover:text-blue-400">
+                        <button className="hover:text-red transition duration-300">
                           Sign in
                         </button>
                       </Link>

@@ -6,6 +6,7 @@ import otpGenerator from "otp-generator";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { otpEmailTemplate } from "../utils/mailTemplate.js";
 import {
   deleteFromCloudinary,
   uploadOnCloudinary,
@@ -179,8 +180,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
     var mailOptions = {
       from: process.env.EMAIL_USER,
       to: `${user.email}`,
-      subject: "Reset Password Link",
-      text: `${req.app.locals.OTP}`,
+      subject: "Reset Password OTP",
+      html: otpEmailTemplate(OTP), // Use the OTP email template
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
@@ -228,6 +229,7 @@ const verifyResponse = asyncHandler(async (req, res) => {
   const response = {
     user: req.user,
   };
+
 
   return res.json(new ApiResponse(200, response, "Token is valid"));
 });
@@ -335,6 +337,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
+  console.log("USER",req.user)
   return res
     .status(200)
     .json(new ApiResponse(200, req.user, "Current user fetched successfully"));

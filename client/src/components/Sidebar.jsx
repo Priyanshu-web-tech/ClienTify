@@ -2,24 +2,19 @@ import { LuChevronFirst, LuChevronLast } from "react-icons/lu";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { IoLogOutOutline } from "react-icons/io5";
-import axios from 'axios';
-
+import axios from "axios";
 
 import {
   signOutUserStart,
   signOutUserSuccess,
   signOutUserFailure,
 } from "../redux/user/userSlice";
+import { Link, useLocation } from "react-router-dom";
 
-export default function Sidebar({
-  activeTab,
-  onTabChange,
-  sidebarItems,
-  category,
-}) {
+const Sidebar = ({ routes }) => {
   const [expanded, setExpanded] = useState(true);
+  const location = useLocation();
   const dispatch = useDispatch();
-   
 
   const handleSignOut = async () => {
     try {
@@ -36,8 +31,6 @@ export default function Sidebar({
       dispatch(signOutUserFailure(error.message));
     }
   };
-
- 
 
   useEffect(() => {
     const handleResize = () => {
@@ -57,44 +50,49 @@ export default function Sidebar({
       <aside>
         <nav className="h-full p-2 flex flex-col justify-between bg-pale-white rounded-lg shadow-sm">
           <div>
-          <div className="pb-2 flex justify-center items-center">
-            <h1
-              className={`overflow-hidden text-2xl font-bold transition-all ${
-                expanded ? "w-32" : "hidden"
-              }`}
-            >
-              {category}
-            </h1>
-            <button
-              onClick={() => setExpanded((curr) => !curr)}
-              className="rounded-md py-2 px-3 my-1  bg-dark text-white border"
-            >
-              {expanded ? (
-                <LuChevronFirst size={25} />
-              ) : (
-                <LuChevronLast size={25} />
-              )}
-            </button>
-          </div>
+            <div className="pb-2 flex justify-center items-center">
+              <h1
+                className={`overflow-hidden text-2xl font-bold transition-all ${
+                  expanded ? "w-32" : "hidden"
+                }`}
+              >
+                Dashboard
+              </h1>
+              <button
+                onClick={() => setExpanded((curr) => !curr)}
+                className="rounded-md py-2 px-3 my-1 bg-dark text-white border"
+              >
+                {expanded ? (
+                  <LuChevronFirst size={25} />
+                ) : (
+                  <LuChevronLast size={25} />
+                )}
+              </button>
+            </div>
 
-          <ul className="border-t">
-            {sidebarItems.map((item, index) => (
-              <SidebarItem
-                key={index}
-                text={item.text}
-                icon={item.icon}
-                active={activeTab === item.text}
-                expanded={expanded}
-                onClick={() => onTabChange(item.text)}
-              />
-            ))}
-          </ul>
+            <ul className="border-t">
+              {routes.map((route, index) => {
+                return (
+                  <SidebarItem
+                    key={index}
+                    text={route.name}
+                    path={route.path}
+                    icon={route.icon}
+                    expanded={expanded}
+                    active={
+                      location.pathname === `/home/${route.path}` ||
+                      location.pathname === `/home${route.path}`
+                    }
+                  />
+                );
+              })}
+            </ul>
           </div>
           <div className="flex-col">
             <div
               className={`overflow-hidden transition-all ${
                 expanded ? "w-full" : "hidden"
-              } `}
+              }`}
             >
               <button
                 onClick={handleSignOut}
@@ -106,7 +104,7 @@ export default function Sidebar({
             <div
               className={`overflow-hidden transition-all ${
                 expanded ? "hidden" : "w-full"
-              } `}
+              }`}
             >
               <button
                 onClick={handleSignOut}
@@ -120,9 +118,9 @@ export default function Sidebar({
       </aside>
     </>
   );
-}
+};
 
-function SidebarItem({ text, active, onClick, icon, expanded }) {
+const SidebarItem = ({ text, path, icon, expanded, active }) => {
   return (
     <li
       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md gap-2 cursor-pointer transition-colors group ${
@@ -130,16 +128,17 @@ function SidebarItem({ text, active, onClick, icon, expanded }) {
           ? "bg-dark text-pale-white"
           : "hover:bg-dark hover:text-pale-white"
       }`}
-      onClick={onClick}
     >
-      {icon}
-      <span
-        className={`overflow-hidden transition-all ${
-          expanded ? "w-full" : "hidden"
-        }`}
-      >
-        {text}
-      </span>
+      <Link to={path} className="flex items-center w-full gap-2">
+        {icon}
+        <span
+          className={`overflow-hidden transition-all ${
+            expanded ? "w-full" : "hidden"
+          }`}
+        >
+          {text}
+        </span>
+      </Link>
       {!expanded && (
         <div
           className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-slate-100 text-slate-800 text-sm invisible opacity-20 -translate-x-3 transition-all duration-75 bg-dark group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
@@ -149,4 +148,6 @@ function SidebarItem({ text, active, onClick, icon, expanded }) {
       )}
     </li>
   );
-}
+};
+
+export default Sidebar;

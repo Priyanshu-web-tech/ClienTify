@@ -34,5 +34,4 @@ router.post("/resend-otp", localVariables, resendOTP);
 router.patch("/avatar",verifyJWT, upload.single("file"), updateUserAvatar);
 router.get("/current-user", verifyJWT, getCurrentUser);
 
-
 export default router;

@@ -6,11 +6,9 @@ import axios from "axios";
 
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import {
-  signInStart,
   signInFailure,
   signInSuccess,
 } from "../redux/user/userSlice";
-import Navbar from "../components/Navbar";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -150,7 +148,6 @@ export default function SignUp() {
   };
   return (
     <>
-    <Navbar/>
     <div className={`flex items-center justify-center min-h-screen `}>
       <div className={`shadow-lg rounded p-8 max-w-md w-full `}>
         <h1 className="text-3xl font-semibold text-center mb-6 text-teal-800">
@@ -217,17 +214,13 @@ export default function SignUp() {
           </div>
 
           <div className="relative">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-lg font-medium text-gray-800 mb-1"
-            >
-              Confirm Password
-            </label>
+            
             <input
               type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
               name="confirmPassword"
               onChange={handleChange}
+              placeholder="Confirm Password"
               required
               className={`appearance-none block w-full   border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white ${
                 errors.confirmPassword ? "border-red" : ""
@@ -243,7 +236,7 @@ export default function SignUp() {
             <button
               type="button"
               onClick={toggleConfirmPasswordVisibility}
-              className="absolute  inset-y-8 right-0 px-3 py-2 text-teal-800 focus:outline-none"
+              className="absolute  inset-y-1 right-0 px-3 py-2 text-teal-800 focus:outline-none"
             >
               {showConfirmPassword ? (
                 <RiEyeOffFill size={24} />
@@ -255,8 +248,8 @@ export default function SignUp() {
 
           <button
             disabled={loading}
-            className="bg-teal-800 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
-          >
+            className="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium bg-dark text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
             {loading ? "Loading..." : "Sign Up"}
           </button>
           <OAuth />

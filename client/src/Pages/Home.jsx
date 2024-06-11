@@ -1,54 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Sidebar from "../components/Sidebar";
-import AddCustomer from "./AddCustomer";
-import AddOrder from "./AddOrder";
-import CreateCampaign from "./CreateCampaign";
-import CampaignsList from "./CampaignsList";
-import { FaUserEdit } from "react-icons/fa";
-import Profile from "./Profile";
+import { Outlet } from "react-router-dom";
+
+import {
+  FaUserPlus as AddCustomerIcon,
+  FaShoppingCart as AddOrderIcon,
+  FaEnvelope as CreateCampaignIcon,
+  FaListAlt as CampaignsListIcon,
+  FaUserCircle as ProfileIcon,
+  FaUsers as CreateAudienceIcon, // New Icon for Create Audience
+} from "react-icons/fa"; 
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState("AddCustomer");
-
-  // Function to handle tab change
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    // Store active tab in local storage
-    localStorage.setItem("ActiveTab", tab);
-  };
-
-  // Define sidebar items
-  const sidebarItems = [
-    { text: "AddCustomer", icon: <FaUserEdit size={25} /> },
-    { text: "AddOrder", icon: <FaUserEdit size={25} /> },
-    { text: "CreateCampaign", icon: <FaUserEdit size={25} /> },
-    { text: "CampaignsList", icon: <FaUserEdit size={25} /> },
-    { text: "Profile", icon: <FaUserEdit size={25} /> },
-
+  const routes = [
+    { path: "", name: "Profile", icon: <ProfileIcon size={25} /> },
+    {
+      path: "add-customer",
+      name: "AddCustomer",
+      icon: <AddCustomerIcon size={25} />,
+    },
+    { path: "add-order", name: "AddOrder", icon: <AddOrderIcon size={25} /> },
+    {
+      path: "create-campaign",
+      name: "Create Campaign",
+      icon: <CreateCampaignIcon size={25} />,
+    },
+    {
+      path: "create-audience",
+      name: "Create Audience",
+      icon: <CreateAudienceIcon size={25} />, // Changed to CreateAudienceIcon
+    },
+    {
+      path: "campaigns-list",
+      name: "Campaign List",
+      icon: <CampaignsListIcon size={25} />,
+    },
   ];
 
-  // Effect to retrieve active tab from local storage on component mount
-  useEffect(() => {
-    const storedTab = localStorage.getItem("ActiveTab");
-    if (storedTab) {
-      setActiveTab(storedTab);
-    }
-  }, []);
   return (
     <>
-      <div className="flex dynamic-height-div h-[calc(100vh-5vh)]">
-        <Sidebar
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          sidebarItems={sidebarItems}
-          category="Dashboard"
-        />
-        <div className="flex-1 ml-2 overflow-y-hidden">
-          {activeTab === "AddCustomer" && <AddCustomer />}
-          {activeTab === "AddOrder" && <AddOrder />}
-          {activeTab === "CreateCampaign" && <CreateCampaign />}
-          {activeTab === "CampaignsList" && <CampaignsList />}
-          {activeTab === "Profile" && <Profile />}
+      <div className="flex dynamic-height-div h-[calc(100vh-10vh)]">
+        <Sidebar routes={routes} />
+        <div className="flex-1 ml-2 overflow-y-scroll">
+          <Outlet />
         </div>
       </div>
     </>

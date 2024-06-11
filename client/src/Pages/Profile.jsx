@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { MdModeEditOutline } from "react-icons/md";
 
 import {
   updateUserStart,
@@ -13,19 +14,18 @@ import {
 } from "../redux/user/userSlice";
 
 export default function Profile() {
+  const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
   const [file, setFile] = useState(null);
-  const [message, setMessage] = useState("");
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userResponse = await axios.get(
-          `api/user/current-user`
-        );
+        const userResponse = await axios.get(`api/user/current-user`);
         const userData = userResponse.data.data;
         dispatch(updateUserSuccess(userData));
       } catch (error) {
@@ -41,14 +41,18 @@ export default function Profile() {
   };
 
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile));
+    }
   };
 
   const handleFileSubmit = async (event) => {
     event.preventDefault();
 
     if (!file) {
-      setMessage("No file selected");
+      toast.error("No new file selected");
       return;
     }
 
@@ -56,7 +60,7 @@ export default function Profile() {
     const allowedFormats = ["jpg", "jpeg", "png"];
     const fileExtension = file.name.split(".").pop().toLowerCase();
     if (!allowedFormats.includes(fileExtension)) {
-      setMessage(
+      toast.error(
         "Invalid file format. Please select a JPG, JPEG, or PNG file."
       );
       return;
@@ -65,7 +69,7 @@ export default function Profile() {
     // Check file size
     const maxSizeInBytes = 2000 * 1024;
     if (file.size > maxSizeInBytes) {
-      setMessage("File size exceeds the limit of 2MB.");
+      toast.error("File size exceeds the limit of 2MB.");
       return;
     }
 
@@ -81,20 +85,18 @@ export default function Profile() {
       });
 
       const { success, data } = response.data;
-      console.log(response.data)
 
       if (success) {
         dispatch(updateUserSuccess(data));
         setUpdateSuccess(true);
         toast.success("User updated successfully");
-        setMessage("File uploaded successfully");
       } else {
         dispatch(updateUserFailure(response.data.message));
         toast.error(response.data.message);
       }
     } catch (error) {
       dispatch(updateUserFailure(error.response.data.message || error.message));
-      setMessage("Error uploading file");
+      toast.error("Error uploading file");
     }
   };
 
@@ -135,9 +137,39 @@ export default function Profile() {
   };
 
   const handleDeleteUser = async () => {
-    const confirmed = window.confirm(
-      "Are you sure? You will not be able to recover this account!"
-    );
+    const customConfirm = () =>
+      new Promise((resolve, reject) => {
+        toast(
+          (t) => (
+            <div>
+              <p>Are you sure? You will not be able to recover this account!</p>
+              <div className="mt-2 flex justify-end">
+                <button
+                  className="bg-red-500 text-red px-4 py-2 mr-2 rounded"
+                  onClick={() => {
+                    toast.dismiss(t.id);
+                    resolve(true);
+                  }}
+                >
+                  Confirm
+                </button>
+                <button
+                  className="bg-gray-300 text-black px-4 py-2 rounded"
+                  onClick={() => {
+                    toast.dismiss(t.id);
+                    resolve(false);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ),
+          { duration: Infinity }
+        );
+      });
+
+    const confirmed = await customConfirm();
 
     if (confirmed) {
       try {
@@ -169,41 +201,37 @@ export default function Profile() {
   };
 
   return (
-    <div className={`flex items-center justify-center min-h-screen   `}>
-      <div className=" flex flex-col items-center justify-center">
-        <div className="mr-8">
+    <div>
+      <div className="p-4 bg-pale-white rounded-lg">
+        <h1 className="text-3xl font-bold mb-4">Manage Profile</h1>
+        <hr />
+      </div>
+      <form
+        onSubmit={handleFileSubmit}
+        className="flex flex-col gap-4 items-center justify-center mt-4"
+      >
+        <div className="relative">
+          <input type="file" onChange={handleFileChange} hidden ref={fileRef} />
+
           <img
-            src={currentUser.avatar}
+            onClick={() => fileRef.current.click()}
+            src={previewUrl || currentUser.avatar}
             alt="profile"
             className="rounded-full h-24 w-24 object-cover cursor-pointer"
           />
+          <label className="absolute bottom-0 right-0 rounded-full bg-gray  px-2 py-1 cursor-pointer">
+            <MdModeEditOutline />
+          </label>
         </div>
 
-        <form onSubmit={handleFileSubmit} className="flex flex-col">
-          <h2 className="mb-4">File Upload</h2>
-
-          <div className="mb-4">
-            <input
-              type="file"
-              onChange={handleFileChange}
-              className="border rounded-lg py-2 px-4"
-            />
-          </div>
-          <div className="mb-4">
-            <button
-              className="border rounded-lg bg-teal-400  py-2 px-4"
-              type="submit"
-            >
-              Upload
-            </button>
-          </div>
-          {message && <p className="text-red-500">{message}</p>}
-        </form>
-      </div>
-      <div className="p-8 max-w-md w-full">
+        <button className="border rounded-lg   py-2 px-4" type="submit">
+          Update Profile Picture
+        </button>
+      </form>
+      <div className="flex flex-col gap-3 items-center justify-center p-8  w-full">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-4 items-center"
+          className="w-full"
         >
           {/* Input fields  */}
           <div className="flex flex-col gap-2 w-full">
@@ -257,22 +285,19 @@ export default function Profile() {
 
             <button
               disabled={loading}
-              className="bg-slate-500 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
+              className=" bg-black text-white   rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
             >
               {loading ? "Loading..." : "Update"}
             </button>
           </div>
         </form>
 
-        {/* Sign out and Delete account button  */}
-        <div className="flex flex-col gap-3 mt-3">
-          <button
-            onClick={handleDeleteUser}
-            className="bg-slate-500 bg-black text-white rounded-lg py-3 uppercase hover:opacity-95"
-          >
-            Delete Account
-          </button>
-        </div>
+        <button
+          onClick={handleDeleteUser}
+          className="bg-slate-500 bg-black text-white rounded-lg p-3 uppercase hover:opacity-95 w-full"
+        >
+          Delete Account
+        </button>
 
         {/* Display error messages */}
         <p className="text-slate-500 mt-5">{error ? error : ""}</p>
