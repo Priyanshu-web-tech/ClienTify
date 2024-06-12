@@ -30,10 +30,6 @@ const deleteFromCloudinary = async (publicId) => {
 
     if (!publicId) return null;
 
-
-
-    
-
     const response = await cloudinary.uploader.destroy(publicId);
 
     return response;

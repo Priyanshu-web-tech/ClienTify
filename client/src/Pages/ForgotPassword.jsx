@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios
+import toast  from "react-hot-toast"; // Import toast
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -24,7 +25,8 @@ function ForgotPassword() {
         navigate(`/reset-password?email=${email}`);
       }
     } catch (error) {
-      console.log(error.response.data.message || error.message);
+      toast.error( error.response.data.message || error.message);
+
     } finally {
       setLoading(false); // Reset loading state after response is received
     }

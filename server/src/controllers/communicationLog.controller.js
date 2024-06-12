@@ -53,17 +53,3 @@ const status = asyncHandler(async (req, res) => {
 });
 
 export { receipt, status };
-
-// const fetchStatus = async (audienceId) => {
-//   try {
-//     const response = await axios.get(`api/communication/check-status`, {
-//       audienceId,
-//     });
-//     const { success, data } = response.data;
-//     if (success) {
-//       return (data.sentCount / data.totalCount) * 100;
-//     }
-//   } catch (error) {
-//     console.log(error.response.data.message || error.message);
-//   }
-// };

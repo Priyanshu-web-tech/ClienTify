@@ -115,8 +115,15 @@ const google = asyncHandler(async (req, res, next) => {
   if (user) {
     const token = jwt.sign({ id: user._id }, process.env.JWT_KEY);
     const { password: pass, ...rest } = user._doc;
+    const expirationDate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+
     return res
-      .cookie("accessToken", token, { httpOnly: true })
+      .cookie("accessToken", token, {
+        sameSite: "none",
+        secure: true,
+        expires: expirationDate, // Set expiration time
+        httpOnly: true,
+      })
       .status(200)
       .json(new ApiResponse(200, rest, ""));
   } else {
@@ -196,7 +203,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
 const verifyOTP = asyncHandler(async (req, res) => {
   const { code } = req.query; // Retrieve OTP code from request body
-  console.log(code, req.app.locals.OTP);
   if (parseInt(req.app.locals.OTP) === parseInt(code)) {
     req.app.locals.OTP = null; // Reset the OTP value
     return res
@@ -230,7 +236,6 @@ const verifyResponse = asyncHandler(async (req, res) => {
     user: req.user,
   };
 
-
   return res.json(new ApiResponse(200, response, "Token is valid"));
 });
 
@@ -259,7 +264,7 @@ const resendOTP = async (req, res, next) => {
       from: process.env.EMAIL_USER,
       to: `${user.email}`,
       subject: "Your New OTP Code",
-      html: generateOTPEmail(OTP),
+      html: otpEmailTemplate(OTP),
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
@@ -289,8 +294,6 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Error while uploading avatar");
   }
   const previousAvatar = req.user.avatar;
-  console.log(previousAvatar)
-
 
   const user = await User.findByIdAndUpdate(
     req.user?.id,
@@ -313,16 +316,13 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     const parts = previousAvatar.split("/");
     const uploadIndex = parts.indexOf("upload");
     const publicIdParts = parts.slice(uploadIndex + 1);
-    let publicId = publicIdParts
-      .slice(publicIdParts.indexOf("CRM"))
-      .join("/");
+    let publicId = publicIdParts.slice(publicIdParts.indexOf("CRM")).join("/");
 
     // Remove file extension from publicId
     const fileName = path.basename(publicId);
     const fileNameWithoutExtension = path.parse(fileName).name;
     publicId = publicId.replace(fileName, fileNameWithoutExtension);
 
-    console.log(publicId);
 
     const response = await deleteFromCloudinary(publicId);
 
@@ -337,12 +337,10 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  console.log("USER",req.user)
   return res
     .status(200)
     .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
-
 
 export {
   updateUser,
@@ -357,5 +355,5 @@ export {
   verifyResponse,
   resendOTP,
   updateUserAvatar,
-  getCurrentUser
+  getCurrentUser,
 };

@@ -92,9 +92,12 @@ const AddOrder = () => {
             placeholder="Date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            onFocus={(e) => e.target.showPicker()}
+
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
           />
+          
           <button
             type="submit"
             className="w-full bg-dark text-white py-2 rounded-lg hover:opacity-50 transition duration-300"

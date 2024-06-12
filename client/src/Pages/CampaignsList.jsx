@@ -18,7 +18,8 @@ const CampaignsList = () => {
         const res = await axios.get("api/campaigns");
         setCampaigns(res.data.data);
       } catch (error) {
-        console.log(error.response.data.message || error.message);
+        toast.error( error.response.data.message || error.message);
+
       }
     };
     fetchCampaigns();
@@ -29,7 +30,7 @@ const CampaignsList = () => {
       const res = await axios.get("api/audience");
       setAudiences(res.data.data);
     } catch (error) {
-      console.log(error.response.data.message || error.message);
+      toast.error( error.response.data.message || error.message);
     }
   };
 
@@ -61,10 +62,9 @@ const CampaignsList = () => {
         });
         setMessageStats(newStats);
       } catch (error) {
-        console.log(
-          "Error fetching message stats:",
-          error.response.data.message || error.message
-        );
+        toast.error( "Error fetching msg stats",error.response.data.message || error.message);
+
+  
       }
     };
 
@@ -77,7 +77,6 @@ const CampaignsList = () => {
       return;
     }
 
-    console.log(customerIds)
 
     setSendingAudienceId(audienceId);
 
@@ -98,7 +97,8 @@ const CampaignsList = () => {
         fetchAudiences();
       }
     } catch (error) {
-      console.log(error.response.data.message || error.message);
+      toast.error( error.response.data.message || error.message);
+
     } finally {
       setSendingAudienceId(null);
     }

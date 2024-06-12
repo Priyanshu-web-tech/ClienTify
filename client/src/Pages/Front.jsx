@@ -14,7 +14,7 @@ const Front = () => {
         </p>
         <Link
           className="bg-red text-white px-6 py-3 rounded-full shadow-lg hover:bg-dark transition duration-300 animate-bounce"
-          to="/sign-in"
+          to="/home"
         >
           Get Started
         </Link>

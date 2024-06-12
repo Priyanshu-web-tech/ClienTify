@@ -18,7 +18,6 @@ const App = () => {
           withCredentials: true, // This ensures cookies are sent
         });
         const data = res.data;
-        console.log(data)
         if (data.success === false) {
           // Token is expired, dispatch sign out actions
           dispatch(signOutUserSuccess({}));

@@ -43,7 +43,6 @@ function ResetPassword() {
       );
 
       const data = response.data;
-      console.log(data)
       const { success } = data;
       if (success) {
         try {
@@ -66,7 +65,8 @@ function ResetPassword() {
 
           navigate("/sign-in");
         } catch (error) {
-          console.log(error.response.data.message || error.message);
+          toast.error( error.response.data.message || error.message);
+
 
           toast.error("Error in updating Password");
         }

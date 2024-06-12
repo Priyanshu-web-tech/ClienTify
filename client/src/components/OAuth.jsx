@@ -6,6 +6,7 @@ import { signInSuccess } from "../redux/user/userSlice.js";
 import { app } from "../firebase.js";
 import { FaGoogle } from "react-icons/fa";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const OAuth = () => {
   const dispatch = useDispatch();
@@ -35,11 +36,10 @@ const OAuth = () => {
       );
 
       const data = response.data;
-      console.log(data)
       dispatch(signInSuccess(data.data));
       navigate("/home");
     } catch (error) {
-      console.log("Could not sign in with Google", error.response.data.message || error.message);
+      toast.error("Could not sign in with Google", error.response.data.message || error.message);
     }
   };
 

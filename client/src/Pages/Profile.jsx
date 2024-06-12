@@ -107,19 +107,10 @@ export default function Profile() {
 
       const response = await axios.post(
         `api/user/update/${currentUser._id}`,
-        formData,
-
-        {
-          withCredentials: true,
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        formData
       );
 
       const data = response.data;
-      console.log(data.data);
       if (data.success === false) {
         dispatch(updateUserFailure(data.message));
         return;
@@ -132,7 +123,7 @@ export default function Profile() {
     } catch (error) {
       dispatch(updateUserFailure(error.response.data.message || error.message));
 
-      toast.error("Error in updating User");
+      toast.error(error.response.data.message || error.message);
     }
   };
 
@@ -229,10 +220,7 @@ export default function Profile() {
         </button>
       </form>
       <div className="flex flex-col gap-3 items-center justify-center p-8  w-full">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full"
-        >
+        <form onSubmit={handleSubmit} className="w-full">
           {/* Input fields  */}
           <div className="flex flex-col gap-2 w-full">
             <label htmlFor="name" className="text-sm font-semibold">

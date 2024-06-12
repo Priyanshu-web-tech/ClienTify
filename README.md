@@ -1,24 +1,24 @@
 
 # Clientify
 
-This CRM ....
+Clientify is a powerful and intuitive mini Customer Relationship Management (CRM) portal designed to help businesses efficiently manage their customer interactions and data. With features tailored to streamline communication, track customer engagement, and organize customer information, Clientify provides an all-in-one solution for improving business relationships and boosting productivity. The platform's clean, modern interface and responsive design ensure a seamless user experience across all devices.
 
 
 ## Demo
 
-Url
+https://clientify.vercel.app
 ## Run Locally
 
 Clone the project
 
 ```bash
-  git clone https://github.com/Priyanshu-web-tech/CRM.git
+  git clone https://github.com/Priyanshu-web-tech/ClienTify.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd CRM
+  cd ClienTify
 ```
 ### Backend Setup
 
@@ -98,7 +98,7 @@ Start the server
 
 
 
-<!-- ## Screenshots
+## Screenshots
 
-![App Screenshot](URL) -->
+![App Screenshot](https://ik.imagekit.io/pz4meracm/Clientify.png?updatedAt=1718160195804)
 

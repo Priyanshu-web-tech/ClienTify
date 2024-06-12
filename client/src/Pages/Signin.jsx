@@ -54,7 +54,6 @@ export default function SignIn() {
       );
 
       const data = response.data;
-      console.log(data)
 
       if (data.success === false) {
         dispatch(signInFailure(data.message));
