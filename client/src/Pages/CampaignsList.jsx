@@ -16,10 +16,11 @@ const CampaignsList = () => {
     const fetchCampaigns = async () => {
       try {
         const res = await axios.get("api/campaigns");
-        setCampaigns(res.data.data);
+        const { data } = res.data;
+        data.reverse();
+        setCampaigns(data);
       } catch (error) {
-        toast.error( error.response.data.message || error.message);
-
+        toast.error(error.response.data.message || error.message);
       }
     };
     fetchCampaigns();
@@ -28,9 +29,11 @@ const CampaignsList = () => {
   const fetchAudiences = async () => {
     try {
       const res = await axios.get("api/audience");
-      setAudiences(res.data.data);
+      const { data } = res.data;
+      data.reverse();
+      setAudiences(data);
     } catch (error) {
-      toast.error( error.response.data.message || error.message);
+      toast.error(error.response.data.message || error.message);
     }
   };
 
@@ -62,21 +65,21 @@ const CampaignsList = () => {
         });
         setMessageStats(newStats);
       } catch (error) {
-        toast.error( "Error fetching msg stats",error.response.data.message || error.message);
-
-  
+        toast.error(
+          "Error fetching msg stats",
+          error.response.data.message || error.message
+        );
       }
     };
 
     fetchMessageStats();
   }, [audiences]);
 
-  const sendMessage = async (audienceId,customerIds) => {
+  const sendMessage = async (audienceId, customerIds) => {
     if (!campaignId) {
       toast.error("Please select a campaign");
       return;
     }
-
 
     setSendingAudienceId(audienceId);
 
@@ -86,9 +89,7 @@ const CampaignsList = () => {
       customerIds: customerIds,
       campaignMsg: campaignMsg,
       serverUrl: import.meta.env.VITE_BASE_URL,
-      
     };
-
 
     try {
       const response = await axios.post(`api/customers/send-message`, formData);
@@ -97,14 +98,13 @@ const CampaignsList = () => {
         fetchAudiences();
       }
     } catch (error) {
-      toast.error( error.response.data.message || error.message);
-
+      toast.error(error.response.data.message || error.message);
     } finally {
       setSendingAudienceId(null);
     }
   };
 
-  const handleCampaignChange = (id,msg) => {
+  const handleCampaignChange = (id, msg) => {
     setCampaignId(id);
     setCampaignMsg(msg);
   };
@@ -158,15 +158,24 @@ const CampaignsList = () => {
           .filter((campaign) =>
             campaign.name.toLowerCase().includes(campaignSearch.toLowerCase())
           )
-          .map((campaign) => (
+          .map((campaign, index) => (
             <div
               key={campaign._id}
-              className={`border  transition-all border-gray-300 rounded-lg p-4 cursor-pointer ${
+              className={`border transition-all border-gray-300 rounded-lg p-4 cursor-pointer ${
                 campaignId === campaign._id ? "bg-gray text-white" : ""
               }`}
-              onClick={() => handleCampaignChange(campaign._id,campaign.message)}
+              onClick={() =>
+                handleCampaignChange(campaign._id, campaign.message)
+              }
             >
-              <h2 className="text-lg font-bold mb-2">{campaign.name}</h2>
+              <h2 className="text-lg font-bold mb-2 flex items-center">
+                {campaign.name}
+                {index === 0 && (
+                  <span className="ml-2 bg-warn text-black px-2 py-1 rounded-full text-xs">
+                    Latest
+                  </span>
+                )}
+              </h2>
               <p className="text-sm">{campaign.message}</p>
             </div>
           ))}
@@ -236,7 +245,9 @@ const CampaignsList = () => {
                           ? "opacity-50 cursor-not-allowed"
                           : ""
                       }`}
-                      onClick={() => sendMessage(audience._id,audience.customerIds)}
+                      onClick={() =>
+                        sendMessage(audience._id, audience.customerIds)
+                      }
                     >
                       {sendingAudienceId === audience._id
                         ? "Sending..."
