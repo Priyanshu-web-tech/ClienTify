@@ -72,6 +72,7 @@ const AddOrder = () => {
             isClearable
             placeholder="Select Customer"
             className=''
+            required
           />
           <label htmlFor="amount">Amount:</label>
           <input
