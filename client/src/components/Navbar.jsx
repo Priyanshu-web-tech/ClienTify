@@ -91,7 +91,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-between">
                   <div className="inline-flex  items-center space-x-2">
                     <Link to="/">
-                      <span className="font-bold text-2xl ">Clientify</span>
+                      <span className="font-bold text-2xl ">ClienTify.</span>
                     </Link>{" "}
                   </div>
                   <div className="-mr-2">
