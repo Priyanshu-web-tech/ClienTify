@@ -1,9 +1,9 @@
 import Customer from "../models/customer.model.js";
-import Campaign from "../models/campaign.model.js";
 import Audience from "../models/audience.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import {mailTemplate} from "../utils/mailTemplate.js";
+import { ApiError } from "../utils/ApiError.js";
+import { mailTemplate } from "../utils/mailTemplate.js";
 import nodemailer from "nodemailer";
 import axios from "axios";
 
@@ -57,10 +57,19 @@ const getCustomers = asyncHandler(async (req, res) => {
 });
 
 const sendMessage = async (req, res) => {
-  const { serverUrl,campaignMsg, audienceId, campaignId, customerIds } = req.body;
+  const { serverUrl, campaignMsg, audienceId, campaignId, customerIds } =
+    req.body;
+
+  if (customerIds.length === 0) {
+    throw new ApiError(400, "No customers selected");
+  }
 
   try {
     const audiences = await Customer.find({ _id: { $in: customerIds } }); // Fetch customers with IDs in customerIds
+
+    if (audiences.length === 0) {
+      throw new ApiError(400, "No customers found");
+    }
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -76,7 +85,6 @@ const sendMessage = async (req, res) => {
         to: customer.email,
         subject: "Special Offer!",
         html: mailTemplate(customer.name, campaignMsg), // Use the email template
-
       };
 
       try {

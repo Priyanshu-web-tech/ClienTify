@@ -15,8 +15,8 @@ import {
   verifyResponse,
 } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
-import { localVariables } from "../middleware/otp.js";
-import { upload } from "../middleware/multerConfig.js";
+import { upload } from "../middleware/multer.middleware.js";
+import { localVariables } from "../middleware/otp.middleware.js";
 
 const router = express.Router();
 
