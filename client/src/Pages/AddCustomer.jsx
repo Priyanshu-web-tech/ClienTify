@@ -32,6 +32,15 @@ const AddCustomer = () => {
     });
   };
 
+    // Get today's date in yyyy-mm-dd format
+    const getTodayDate = () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+      const dd = String(today.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    };
+
   return (
     <div>
       <div className="p-4 bg-pale-white rounded-lg">
@@ -95,7 +104,9 @@ const AddCustomer = () => {
               name="lastVisit"
               placeholder="Last Visit"
               value={formData.lastVisit}
-              onFocus={(e) => e.target.showPicker()}
+              onClick={(e) => e.target.showPicker()} // Ensure date picker shows on click
+              max={getTodayDate()}
+
 
               onChange={handleChange}
               required

@@ -8,7 +8,9 @@ import {
   FaEnvelope as CreateCampaignIcon,
   FaListAlt as CampaignsListIcon,
   FaUserCircle as ProfileIcon,
-  FaUsers as CreateAudienceIcon, // New Icon for Create Audience
+  FaUsers as CreateAudienceIcon,
+  FaUserFriends as AllCustomersIcon,
+
 } from "react-icons/fa"; 
 
 const Home = () => {
@@ -24,6 +26,11 @@ const Home = () => {
       path: "create-campaign",
       name: "Create Campaign",
       icon: <CreateCampaignIcon size={25} />,
+    },
+    {
+      path: "all-customers",
+      name: "All Customers",
+      icon: <AllCustomersIcon size={25} />, // Changed to CreateAudienceIcon
     },
     {
       path: "create-audience",

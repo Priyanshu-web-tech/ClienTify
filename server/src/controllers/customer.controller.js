@@ -38,6 +38,22 @@ const getCustomers = asyncHandler(async (req, res) => {
       },
     },
     {
+      $addFields: {
+        lastOrderDate: { $max: "$orders.date" },
+      },
+    },
+    {
+      $addFields: {
+        lastVisit: {
+          $cond: {
+            if: { $gt: ["$lastOrderDate", "$lastVisit"] },
+            then: "$lastOrderDate",
+            else: "$lastVisit",
+          },
+        },
+      },
+    },
+    {
       $project: {
         _id: 1,
         name: 1,
@@ -118,4 +134,31 @@ const sendMessage = async (req, res) => {
   }
 };
 
-export { addCustomer, getCustomers, sendMessage };
+const updateCustomer = asyncHandler(async (req, res) => {
+  const { customerId } = req.params;
+  const { name, email } = req.body;
+
+  const existingCustomer = await Customer.findOne({ email });
+
+  if (existingCustomer && existingCustomer._id.toString() !== customerId) {
+    throw new ApiError(400, "Email already exists");
+  }
+
+
+  const updatedCustomer = await Customer.findByIdAndUpdate(
+    customerId,
+    { name, email },
+    { new: true }
+  );
+
+  if (!updatedCustomer) {
+    throw new ApiError(404, "Customer not found");
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, updatedCustomer, "Customer updated successfully"));
+});
+
+
+export { addCustomer, getCustomers, sendMessage, updateCustomer};

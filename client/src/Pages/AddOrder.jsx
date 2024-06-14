@@ -53,6 +53,15 @@ const AddOrder = () => {
     }
   };
 
+  // Get today's date in yyyy-mm-dd format
+  const getTodayDate = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   return (
     <div>
       <div className="p-4 bg-pale-white rounded-lg">
@@ -93,9 +102,10 @@ const AddOrder = () => {
             placeholder="Date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            onFocus={(e) => e.target.showPicker()}
+            max={getTodayDate()}
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            onClick={(e) => e.target.showPicker()} // Ensure date picker shows on click
           />
           
           <button

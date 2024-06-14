@@ -14,6 +14,7 @@ import AddOrder from "../Pages/AddOrder";
 import CreateCampaign from "../Pages/CreateCampaign";
 import CreateAudience from "../Pages/CreateAudience";
 import CampaignsList from "../Pages/CampaignsList";
+import AllCustomers from "../Pages/AllCustomers";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
               {
                 path: "campaigns-list",
                 element: <CampaignsList />,
+              },
+              {
+                path: "all-customers",
+                element: <AllCustomers />,
               },
              
             ],

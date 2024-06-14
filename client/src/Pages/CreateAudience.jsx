@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CreateAudience = () => {
   const [customers, setCustomers] = useState([]);
@@ -140,12 +140,14 @@ const CreateAudience = () => {
           />
         </div>
         <div className="mb-4 flex flex-col gap-3">
-        <p className="text-lg font-medium mb-2">Filters:</p>
+          <p className="text-lg font-medium mb-2">Filters:</p>
 
           <div className="flex flex-wrap gap-3">
             <button
               className={`mr-2 px-4 py-2 rounded ${
-                filters.spendsAbove10000 ? "bg-black text-white" : "bg-gray opacity-50"
+                filters.spendsAbove10000
+                  ? "bg-black text-white"
+                  : "bg-gray opacity-50"
               }`}
               onClick={() => handleFilterChange("spendsAbove10000")}
             >
