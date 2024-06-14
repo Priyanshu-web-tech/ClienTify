@@ -33,7 +33,7 @@ const AddOrder = () => {
   const handleChange = (selectedOption) => {
     setFormData({
       ...formData,
-      customerId: selectedOption.value
+      customerId: selectedOption ? selectedOption.value : ''
     });
   };
 
@@ -65,7 +65,7 @@ const AddOrder = () => {
           <Select
             id="customerId"
             name="customerId"
-            value={customerOptions.find(option => option.value === formData.customerId)}
+            value={customerOptions.find(option => option.value === formData.customerId) || null}
             onChange={handleChange}
             options={customerOptions}
             isLoading={isLoading}
@@ -94,7 +94,6 @@ const AddOrder = () => {
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
             onFocus={(e) => e.target.showPicker()}
-
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
           />
