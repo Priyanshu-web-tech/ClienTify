@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const AllCustomers = () => {
+  const { currentUser } = useSelector((state) => state.user);
   const [customers, setCustomers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
    const fetchCustomers = async () => {
       try {
-        const res = await axios.get("api/customers");
+        const res = await axios.get(`api/customers/${currentUser._id}`);
         const { data } = res.data;
 
         setCustomers(data);

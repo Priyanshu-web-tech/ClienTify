@@ -6,6 +6,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { mailTemplate } from "../utils/mailTemplate.js";
 import nodemailer from "nodemailer";
 import axios from "axios";
+import mongoose from "mongoose";
 
 const addCustomer = asyncHandler(async (req, res) => {
   const customer = new Customer(req.body);
@@ -16,7 +17,13 @@ const addCustomer = asyncHandler(async (req, res) => {
 });
 
 const getCustomers = asyncHandler(async (req, res) => {
+
   const customers = await Customer.aggregate([
+    {
+      $match: {
+        addedBy: new mongoose.Types.ObjectId(req.params.id),
+      },
+    },
     {
       $lookup: {
         from: "orders",
@@ -63,6 +70,7 @@ const getCustomers = asyncHandler(async (req, res) => {
         lastVisit: 1,
         createdAt: 1,
         updatedAt: 1,
+        addedBy: 1,
       },
     },
   ]);
@@ -71,6 +79,7 @@ const getCustomers = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, customers, "Customers fetched successfully"));
 });
+
 
 const sendMessage = async (req, res) => {
   const { serverUrl, campaignMsg, audienceId, campaignId, customerIds } =

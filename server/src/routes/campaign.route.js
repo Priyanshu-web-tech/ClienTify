@@ -3,6 +3,6 @@ import { createCampaign, getCampaigns } from '../controllers/campaign.controller
 const router = Router();
 
 router.post('/create', createCampaign);
-router.get('/', getCampaigns);
+router.get('/:id', getCampaigns);
 
 export default router;

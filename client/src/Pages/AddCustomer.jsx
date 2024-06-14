@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const AddCustomer = () => {
+  const { currentUser } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     totalSpends: "",
     visits: "",
     lastVisit: "",
+    addedBy: currentUser._id,
   });
 
   const handleChange = (e) => {

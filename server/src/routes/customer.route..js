@@ -4,7 +4,7 @@ import { addCustomer, getCustomers, sendMessage, updateCustomer } from '../contr
 const router = Router();
 
 router.post('/add', addCustomer);
-router.get('/', getCustomers);
+router.get('/:id', getCustomers);
 router.post('/send-message', sendMessage);
 router.patch('/update-customer', updateCustomer);
 

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const CampaignsList = () => {
+  const { currentUser } = useSelector((state) => state.user);
+
   const [campaigns, setCampaigns] = useState([]);
   const [audiences, setAudiences] = useState([]);
   const [campaignId, setCampaignId] = useState("");
@@ -15,7 +18,7 @@ const CampaignsList = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const res = await axios.get("api/campaigns");
+        const res = await axios.get(`api/campaigns/${currentUser._id}`);
         const { data } = res.data;
         data.reverse();
         setCampaigns(data);
@@ -28,7 +31,7 @@ const CampaignsList = () => {
 
   const fetchAudiences = async () => {
     try {
-      const res = await axios.get("api/audience");
+      const res = await axios.get(`api/audience/${currentUser._id}`);
       const { data } = res.data;
       data.reverse();
       setAudiences(data);
@@ -149,7 +152,7 @@ const CampaignsList = () => {
           placeholder="Search Campaigns"
           value={campaignSearch}
           onChange={(e) => setCampaignSearch(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 mb-2"
+          className="border border-gray rounded-md p-2 mb-2"
         />
       </div>
 
@@ -161,8 +164,8 @@ const CampaignsList = () => {
           .map((campaign, index) => (
             <div
               key={campaign._id}
-              className={`border transition-all border-gray-300 rounded-lg p-4 cursor-pointer ${
-                campaignId === campaign._id ? "bg-gray text-white" : ""
+              className={`border transition-all border-gray rounded-lg p-4 cursor-pointer ${
+                campaignId === campaign._id ? "bg-pale-white text-black" : ""
               }`}
               onClick={() =>
                 handleCampaignChange(campaign._id, campaign.message)
@@ -187,7 +190,7 @@ const CampaignsList = () => {
           placeholder="Search Audiences"
           value={audienceSearch}
           onChange={(e) => setAudienceSearch(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 mb-2"
+          className="border border-gray rounded-md p-2 mb-2"
         />
       </div>
 

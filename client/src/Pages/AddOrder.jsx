@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Select from 'react-select';
+import { useSelector } from 'react-redux';
 
 const AddOrder = () => {
+  const { currentUser } = useSelector((state) => state.user);
+
   const [formData, setFormData] = useState({
     customerId: '',
     amount: '',
@@ -16,7 +19,7 @@ const AddOrder = () => {
     const fetchCustomers = async () => {
       setIsLoading(true);
       try {
-        const res = await axios.get('api/customers');
+        const res = await axios.get(`api/customers/${currentUser._id}`);
         const options = res.data.data.map(customer => ({
           value: customer._id,
           label: `${customer.name} (${customer.email})`

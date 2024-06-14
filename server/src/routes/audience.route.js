@@ -3,7 +3,7 @@ import { createAudience, getAudiences } from "../controllers/audience.controller
 const router = Router();
 
 router.post('/create', createAudience);
-router.get('/', getAudiences);
+router.get('/:id', getAudiences);
 
 
 export default router;

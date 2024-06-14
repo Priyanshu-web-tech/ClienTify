@@ -3,8 +3,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const CreateAudience = () => {
+  const { currentUser } = useSelector((state) => state.user);
+
   const [customers, setCustomers] = useState([]);
   const navigate = useNavigate();
   const [filters, setFilters] = useState({
@@ -18,7 +21,7 @@ const CreateAudience = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await axios.get("api/customers");
+        const res = await axios.get(`api/customers/${currentUser._id}`);
         const { data } = res.data;
         setCustomers(data);
       } catch (error) {
@@ -93,6 +96,7 @@ const CreateAudience = () => {
       const formData = {
         customerIds,
         name: audienceName, // Include audience name in form data
+        userId: currentUser._id,
       };
 
       const response = await axios.post("api/audience/create", formData);
@@ -118,7 +122,17 @@ const CreateAudience = () => {
   return (
     <div>
       <div className="p-4 bg-pale-white rounded-lg">
-        <h1 className="text-3xl font-bold mb-4">Create Audience</h1>
+        <div className="flex flex-col md:flex-row justify-between">
+          <h1 className="text-3xl font-bold mb-4">Create Audience</h1>
+          <div>
+            <button
+              className="px-4 py-2 mb-4 md:mb-0 bg-red hover:opacity-70 text-white rounded"
+              onClick={handleCheckAudienceSize}
+            >
+              Check Audience Size
+            </button>
+          </div>
+        </div>
         <hr className="border-gray-500" />
       </div>
       <div className="bg-white shadow-md rounded-lg p-4">
@@ -142,7 +156,7 @@ const CreateAudience = () => {
         <div className="mb-4 flex flex-col gap-3">
           <p className="text-lg font-medium mb-2">Filters:</p>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col md:flex-row gap-3">
             <button
               className={`mr-2 px-4 py-2 rounded ${
                 filters.spendsAbove10000
@@ -176,14 +190,7 @@ const CreateAudience = () => {
               Not Visited Last 3 Months
             </button>
           </div>
-          <div>
-            <button
-              className="px-4 py-2 bg-red hover:opacity-70 text-white rounded"
-              onClick={handleCheckAudienceSize}
-            >
-              Check Audience Size
-            </button>
-          </div>
+
           <button
             className="px-4 py-2 bg-dark hover:opacity-50 text-white rounded"
             onClick={handleCreateAudience}

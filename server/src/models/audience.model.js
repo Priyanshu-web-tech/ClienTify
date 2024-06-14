@@ -17,6 +17,10 @@ const AudienceSchema = new Schema(
       type: String,
       default: "PENDING",
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     // Automatically includes createdAt and updatedAt fields

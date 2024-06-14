@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const CreateCampaign = () => {
+  const { currentUser } = useSelector((state) => state.user);
+
   const [formData, setFormData] = useState({
     name: "",
     message: "",
+    userId: currentUser._id,
   });
 
   const handleChange = (e) => {

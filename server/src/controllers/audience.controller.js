@@ -3,9 +3,9 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const createAudience = asyncHandler(async (req, res) => {
-  const { name, customerIds } = req.body;
+  const { name, customerIds,userId } = req.body;
 
-  const audience = new Audience({ name: name, customerIds: customerIds });
+  const audience = new Audience({ name: name, customerIds: customerIds, createdBy: userId});
   await audience.save();
 
   res
@@ -14,7 +14,9 @@ const createAudience = asyncHandler(async (req, res) => {
 });
 
 const getAudiences = asyncHandler(async (req, res) => {
-  const audiences = await Audience.find();
+  const userId=req.params.id;
+  
+  const audiences = await Audience.find({ createdBy: userId});
 
   res.status(200).json(new ApiResponse(200, audiences, "Audiences fetched"));
 });
