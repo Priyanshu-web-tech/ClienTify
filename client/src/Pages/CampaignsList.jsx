@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import EditCampaignModal from "../components/EditCampaignModal";
 
 const CampaignsList = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -14,20 +15,19 @@ const CampaignsList = () => {
   const [audienceSearch, setAudienceSearch] = useState("");
   const [sendingAudienceId, setSendingAudienceId] = useState(null);
   const [messageStats, setMessageStats] = useState({});
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
 
-  useEffect(() => {
-    const fetchCampaigns = async () => {
-      try {
-        const res = await axios.get(`api/campaigns/${currentUser._id}`);
-        const { data } = res.data;
-        data.reverse();
-        setCampaigns(data);
-      } catch (error) {
-        toast.error(error.response.data.message || error.message);
-      }
-    };
-    fetchCampaigns();
-  }, []);
+  const fetchCampaigns = async () => {
+    try {
+      const res = await axios.get(`api/campaigns/${currentUser._id}`);
+      const { data } = res.data;
+      data.reverse();
+      setCampaigns(data);
+    } catch (error) {
+      toast.error(error.response.data.message || error.message);
+    }
+  };
 
   const fetchAudiences = async () => {
     try {
@@ -41,6 +41,7 @@ const CampaignsList = () => {
   };
 
   useEffect(() => {
+    fetchCampaigns();
     fetchAudiences();
   }, []);
 
@@ -140,6 +141,32 @@ const CampaignsList = () => {
     );
   };
 
+  const handleCampaignDelete = async (id) => {
+    const shouldDelete = window.confirm(
+      "Are you sure you want to delete this campaign?"
+    );
+    if (!shouldDelete || !id) {
+      return;
+    }
+
+    try {
+      await axios.delete(`api/campaigns/delete-campaign/${id}`);
+      fetchCampaigns();
+      toast.success("Campaign deleted successfully");
+    } catch (error) {
+      toast.error(error.response.data.message || "Error deleting campaign");
+    }
+  };
+
+  const handleCampaignEdit = async (id) => {
+    try {
+      const campaignToEdit = campaigns.find((campaign) => campaign._id === id);
+      setSelectedCampaign(campaignToEdit);
+      setEditModalOpen(true);
+    } catch (error) {
+      toast.error("Error editing campaign");
+    }
+  };
   return (
     <div>
       <div className="p-4 bg-pale-white rounded-lg">
@@ -180,6 +207,21 @@ const CampaignsList = () => {
                 )}
               </h2>
               <p className="text-sm">{campaign.message}</p>
+
+              <div className="flex justify-center items-center gap-4 mt-4">
+                <button
+                  className="bg-dark  hover:scale-110 transition-all duration-300 text-pale-white  px-2 rounded-md w-1/2"
+                  onClick={() => handleCampaignDelete(campaign._id)}
+                >
+                  Delete
+                </button>
+                <button
+                  className="bg-dark hover:scale-110 transition-all duration-300 text-white  px-2 rounded-md w-1/2"
+                  onClick={() => handleCampaignEdit(campaign._id)}
+                >
+                  Edit
+                </button>
+              </div>
             </div>
           ))}
       </div>
@@ -266,6 +308,12 @@ const CampaignsList = () => {
           </tbody>
         </table>
       </div>
+      <EditCampaignModal
+        campaign={selectedCampaign}
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        onUpdate={fetchCampaigns}
+      />
     </div>
   );
 };

@@ -9,7 +9,7 @@ const CustomerSchema = new Schema(
     totalSpends: { type: Number, default: 0 },
     visits: { type: Number, default: 0 },
     lastVisit: { type: Date, required: true },
-    addedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    addedBy: { type: Schema.Types.ObjectId, ref: "User", required: true},
   },
   { timestamps: true }
 );

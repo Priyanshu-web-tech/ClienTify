@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema(
   {
-    customerId: { type: Schema.Types.ObjectId, ref: "Customer" },
-    amount: Number,
-    date: Date,
+    customerId: { type: Schema.Types.ObjectId, ref: "Customer" , required: true},
+    amount: {type:Number, required: true},
+    date: {type:Date, required: true},
   },
   { timestamps: true }
 );

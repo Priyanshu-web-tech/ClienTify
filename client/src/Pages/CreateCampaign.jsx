@@ -28,6 +28,8 @@ const CreateCampaign = () => {
       setFormData({
         name: "",
         message: "",
+        userId: currentUser._id, 
+
       });
     } catch (error) {
       toast.error("An error occurred while creating the campaign");

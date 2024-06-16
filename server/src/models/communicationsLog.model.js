@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const CommunicationsLogSchema = new Schema(
   {
-    audienceId: { type: mongoose.Schema.Types.ObjectId, ref: "Audience" },
-    customerId: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
-    campaignId: { type: mongoose.Schema.Types.ObjectId, ref: "Campaign" },
+    audienceId: { type: mongoose.Schema.Types.ObjectId, ref: "Audience", required: true},
+    customerId: { type: mongoose.Schema.Types.ObjectId, ref: "Customer", required: true},
+    campaignId: { type: mongoose.Schema.Types.ObjectId, ref: "Campaign" , required: true},
     status: { type: String, default: "PENDING" },
   },
   {
