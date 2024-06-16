@@ -126,7 +126,7 @@ const CreateAudience = () => {
           <h1 className="text-3xl font-bold mb-4">Create Audience</h1>
           <div>
             <button
-              className="px-4 py-2 mb-4 md:mb-0 bg-red hover:opacity-70 text-white rounded"
+              className="bg-red hover:scale-110 transition-all duration-300 text-pale-white py-2 px-6 rounded-full"
               onClick={handleCheckAudienceSize}
             >
               Check Audience Size
@@ -170,7 +170,7 @@ const CreateAudience = () => {
             <button
               className={`mr-2 px-4 py-2 rounded ${
                 filters.spendsAbove10000AndMaxVisits3
-                  ? "bg-black text-white"
+                  ? "bg-black text-white "
                   : "bg-gray opacity-50"
               }`}
               onClick={() =>

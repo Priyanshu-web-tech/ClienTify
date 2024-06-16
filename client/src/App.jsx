@@ -24,6 +24,9 @@ const App = () => {
         }
         dispatch(updateUserSuccess(data.data.user));
       } catch (error) {
+        if(error.response.data.success === false) {
+          dispatch(signOutUserSuccess({}));
+        }
         console.error(
           "Error checking token validity:",
           error.response.data.message || error.message

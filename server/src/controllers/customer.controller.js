@@ -7,6 +7,8 @@ import { mailTemplate } from "../utils/mailTemplate.js";
 import nodemailer from "nodemailer";
 import axios from "axios";
 import mongoose from "mongoose";
+import Order from "../models/order.model.js";
+import CommunicationsLog from "../models/communicationsLog.model.js";
 
 const addCustomer = asyncHandler(async (req, res) => {
   const customer = new Customer(req.body);
@@ -17,7 +19,6 @@ const addCustomer = asyncHandler(async (req, res) => {
 });
 
 const getCustomers = asyncHandler(async (req, res) => {
-
   const customers = await Customer.aggregate([
     {
       $match: {
@@ -79,7 +80,6 @@ const getCustomers = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, customers, "Customers fetched successfully"));
 });
-
 
 const sendMessage = async (req, res) => {
   const { serverUrl, campaignMsg, audienceId, campaignId, customerIds } =
@@ -144,15 +144,14 @@ const sendMessage = async (req, res) => {
 };
 
 const updateCustomer = asyncHandler(async (req, res) => {
-  const { customerId } = req.params;
+  const customerId = req.params.id;
   const { name, email } = req.body;
 
   const existingCustomer = await Customer.findOne({ email });
 
   if (existingCustomer && existingCustomer._id.toString() !== customerId) {
-    throw new ApiError(400, "Email already exists");
+    throw new ApiError(400, "Email already assigned to a user");
   }
-
 
   const updatedCustomer = await Customer.findByIdAndUpdate(
     customerId,
@@ -166,8 +165,37 @@ const updateCustomer = asyncHandler(async (req, res) => {
 
   res
     .status(200)
-    .json(new ApiResponse(200, updatedCustomer, "Customer updated successfully"));
+    .json(
+      new ApiResponse(200, updatedCustomer, "Customer updated successfully")
+    );
 });
 
+const deleteCustomer = asyncHandler(async (req, res) => {
+  const customerId = req.params.id;
 
-export { addCustomer, getCustomers, sendMessage, updateCustomer};
+  const customer = await Customer.findByIdAndDelete(customerId);
+  if (!customer) {
+    throw new ApiError(404, "Customer not found");
+  }
+
+  await Order.deleteMany({ customerId });
+
+  await CommunicationsLog.deleteMany({ customerId });
+
+  await Audience.updateMany(
+    { customerIds: customerId },
+    { $pull: { customerIds: customerId } }
+  );
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Customer deleted successfully"));
+});
+
+export {
+  addCustomer,
+  getCustomers,
+  sendMessage,
+  updateCustomer,
+  deleteCustomer,
+};
