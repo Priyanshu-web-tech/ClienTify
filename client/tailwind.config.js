@@ -14,6 +14,7 @@ export default {
       "warn": "#ffc107",
       "black":"#000000",
       "gray":"#808080",
+      "green":"#008000",
     },keyframes: {
       'fade-in-down': {
         '0%': {

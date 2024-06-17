@@ -114,8 +114,7 @@ const CreateAudience = () => {
         toast.error("Failed to create audience.");
       }
     } catch (error) {
-      console.error("Error creating audience:", error);
-      toast.error("Failed to create audience.");
+      toast.error(error.response.data.message || "Error creating audience");
     }
   };
 

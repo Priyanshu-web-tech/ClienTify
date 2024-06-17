@@ -51,8 +51,7 @@ const AddOrder = () => {
         date: '',
       });
     } catch (error) {
-      console.error('Error adding order:', error);
-      toast.error('Failed to add order');
+      toast.error( error.response.data.message ||'Failed to add order');
     }
   };
 

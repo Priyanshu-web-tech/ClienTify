@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import EditCustomerModal from "../components/EditCustomerModal";
 import toast from "react-hot-toast";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const AllCustomers = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -10,6 +11,8 @@ const AllCustomers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const fetchCustomers = async () => {
     try {
@@ -38,11 +41,15 @@ const AllCustomers = () => {
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Intl.DateTimeFormat("en-IN", options).format(new Date(dateString));
+    return new Intl.DateTimeFormat("en-IN", options).format(
+      new Date(dateString)
+    );
   };
 
   const handleCustomerDelete = async (id) => {
-    const shouldDelete = window.confirm("Are you sure you want to delete this customer?");
+    const shouldDelete = window.confirm(
+      "Are you sure you want to delete this customer?"
+    );
     if (!shouldDelete || !id) {
       return;
     }
@@ -51,7 +58,7 @@ const AllCustomers = () => {
       await axios.delete(`api/customers/delete-customer/${id}`);
       fetchCustomers();
     } catch (error) {
-      toast.error(error.response.data.message || "Error deleting customer")
+      toast.error(error.response.data.message || "Error deleting customer");
     }
   };
 
@@ -68,6 +75,22 @@ const AllCustomers = () => {
     fetchCustomers();
     toast.success("Customer updated successfully");
   };
+
+  // Pagination:
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const goToNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const goToPrevPage = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
+
+  const canGoNext = endIndex < filteredCustomers.length;
+  const canGoPrev = currentPage > 1;
 
   return (
     <div>
@@ -114,7 +137,7 @@ const AllCustomers = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredCustomers.map((customer) => (
+              {filteredCustomers.slice(startIndex, endIndex).map((customer) => (
                 <tr
                   className="transition-all duration-300 hover:font-bold hover:bg-pale-white "
                   key={customer._id}
@@ -155,6 +178,28 @@ const AllCustomers = () => {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="mt-4 ml-2">
+        <button
+          onClick={goToPrevPage}
+          disabled={!canGoPrev}
+          className={`bg-dark hover:scale-110 transition-all duration-300 text-pale-white py-2 px-6 rounded-full mr-2 ${
+            !canGoPrev ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          <IoIosArrowBack className="inline-block mr-1" />
+          Prev
+        </button>
+        <button
+          onClick={goToNextPage}
+          disabled={!canGoNext}
+          className={`bg-dark hover:scale-110 transition-all duration-300 text-pale-white py-2 px-6 rounded-full ${
+            !canGoNext ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          Next
+          <IoIosArrowForward className="inline-block ml-1" />
+        </button>
       </div>
       {isModalOpen && (
         <EditCustomerModal

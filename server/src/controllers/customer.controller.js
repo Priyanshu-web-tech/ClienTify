@@ -11,7 +11,36 @@ import Order from "../models/order.model.js";
 import CommunicationsLog from "../models/communicationsLog.model.js";
 
 const addCustomer = asyncHandler(async (req, res) => {
-  const customer = new Customer(req.body);
+  const { name, email, totalSpends, visits, lastVisit,addedBy } = new Customer(
+    req.body
+  );
+
+  const existingCustomer = await Customer.findOne({ email });
+  
+  if (existingCustomer) {
+    throw new ApiError(400, "Customer already exists");
+  }
+
+  if (isNaN(totalSpends) || isNaN(visits)) {
+    throw new ApiError(400, "Total spends and visits must be numbers");
+  }
+
+  if (isNaN(Date.parse(lastVisit))) {
+    throw new ApiError(400, "Invalid date format for last visit");
+  }
+
+  if (totalSpends < 0 || visits < 0) {
+    throw new ApiError(400, "Total spends and visits must be positive numbers");
+  }
+
+  const customer = new Customer({
+    name,
+    email,
+    totalSpends,
+    visits,
+    lastVisit,
+    addedBy,
+  });
   await customer.save();
   res
     .status(200)

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import UploadExcelModal from "../components/UploadExcelModal";
 
 const AddCustomer = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -13,6 +14,7 @@ const AddCustomer = () => {
     lastVisit: "",
     addedBy: currentUser._id,
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,25 +26,35 @@ const AddCustomer = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("api/customers/add", formData);
-    toast.success("Customer added successfully");
-    setFormData({
-      name: "",
-      email: "",
-      totalSpends: "",
-      visits: "",
-      lastVisit: "",
-    });
+
+    try {
+      await axios.post("api/customers/add", formData);
+      toast.success("Customer added successfully");
+      setFormData({
+        name: "",
+        email: "",
+        totalSpends: "",
+        visits: "",
+        lastVisit: "",
+      });
+    } catch (error) {
+      toast.error(error.response.data.message || "Error adding customer");
+    }
   };
 
-    // Get today's date in yyyy-mm-dd format
-    const getTodayDate = () => {
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-      const dd = String(today.getDate()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
-    };
+  const handleUpload = async (customers) => {
+    await Promise.all(
+      customers.map((customer) => axios.post("api/customers/add", customer))
+    );
+  };
+
+  const getTodayDate = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
 
   return (
     <div>
@@ -107,10 +119,7 @@ const AddCustomer = () => {
               name="lastVisit"
               placeholder="Last Visit"
               value={formData.lastVisit}
-              onClick={(e) => e.target.showPicker()} // Ensure date picker shows on click
               max={getTodayDate()}
-
-
               onChange={handleChange}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
@@ -123,6 +132,18 @@ const AddCustomer = () => {
             Add Customer
           </button>
         </form>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="w-full bg-dark text-white py-2 mt-4 rounded-lg hover:opacity-50 transition duration-300"
+        >
+          Upload via Excel File
+        </button>
+        <UploadExcelModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onUpload={handleUpload}
+          currentUserId={currentUser._id}
+        />
       </div>
     </div>
   );

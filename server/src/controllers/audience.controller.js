@@ -4,6 +4,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const createAudience = asyncHandler(async (req, res) => {
   const { name, customerIds,userId } = req.body;
+  
+
 
   const audience = new Audience({ name: name, customerIds: customerIds, createdBy: userId});
   await audience.save();
@@ -15,6 +17,8 @@ const createAudience = asyncHandler(async (req, res) => {
 
 const getAudiences = asyncHandler(async (req, res) => {
   const userId=req.params.id;
+
+  
   
   const audiences = await Audience.find({ createdBy: userId});
 

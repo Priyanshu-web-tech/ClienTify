@@ -32,8 +32,7 @@ const CreateCampaign = () => {
 
       });
     } catch (error) {
-      toast.error("An error occurred while creating the campaign");
-      console.error("Error creating campaign:", error);
+      toast.error(error.response.data.message || "Error creating campaign");
     }
   };
 
